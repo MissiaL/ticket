@@ -3,8 +3,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time, threading
+import time,threading
 import win32ui
+
 
 def msg(msg):
     threading.Thread(target=win32ui.MessageBox, args=(msg, time.ctime(),)).start()
@@ -43,11 +44,7 @@ while True:
         train_name.append(name)
         print('-'*60)
 
-    print(train_name)
-
-    #print 'На 30 апреля с 20-00 до 24-00 доступно {0} поезда: {1}'.format(len(trains), ', '.join(train_name))
-
-
+    print('На 30 апреля с 20-00 до 24-00 доступно {0} поезда: {1}'.format(len(trains), ', '.join(train_name)))
 
     time.sleep(5)
     driver.refresh()

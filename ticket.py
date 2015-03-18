@@ -3,16 +3,15 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time, os
+import time, threading
+import win32ui
 
+def msg(msg):
+    threading.Thread(target=win32ui.MessageBox, args=(msg, time.ctime(),)).start()
 
 url = 'http://pass.rzd.ru/timetable/public/ru?STRUCTURE_ID=735&layer_id=5354&refererVpId=1&refererPageId=704&refererLayerId=4065#dir=0|tfl=3|checkSeats=1|st0=%D0%9C%D0%9E%D0%A1%D0%9A%D0%92%D0%90|code0=2000000|dt0=30.04.2015|ti0=20-24|st1=%D0%9A%D0%90%D0%9D%D0%90%D0%A8|code1=2060630|dt1=18.03.2015'
-#url = 'http://pass.rzd.ru/timetable/public/ru?STRUCTURE_ID=704&layer_id=5354&refererLayerId=4819#dir=0|tfl=3|checkSeats=1|st0=%D0%9C%D0%9E%D0%A1%D0%9A%D0%92%D0%90|code0=2000000|dt0=30.04.2015|st1=%D0%9A%D0%90%D0%9D%D0%90%D0%A8|code1=2060630|dt1=19.03.2015'
 
-
-driver = webdriver.PhantomJS(executable_path="C:\\Python\\phantomjs-2.0.0-windows\\bin\\phantomjs.exe", service_log_path=os.path.devnull)
-driver.set_window_size(800,600)
-#driver = webdriver.Firefox()
+driver = webdriver.Firefox()
 driver.get(url)
 while True:
     try:
@@ -32,12 +31,15 @@ while True:
         train_time = train.find_element_by_xpath('.//td[4]/div/span[1]').text
         places = train.find_elements_by_xpath('.//td[9]/table/tbody/tr')
         for place in places:
-            #print place.get_attribute('innerHTML')
             place = place.text.split(' ')
             if place[0] == 'Плацкартный':
-                print('Купить срочно {0} билет на поезд {1} по цене {2} р. Время отправления {3}'.format(place[0], name, place[2], train_time))
+                message = 'Купить срочно {0} билет на поезд {1} по цене {2} р. Время отправления {3}'.format(place[0], name, place[2], train_time)
+                print(message, ' ', time.ctime())
+                msg(message)
             if place[0] == 'Купе' and int(place[2]) <= 3000:
-                print('Купить срочно {0} билет на поезд {1} по цене {2} р. Время отправления {3}'.format(place[0], name, place[2], train_time))
+                message = 'Купить срочно {0} билет на поезд {1} по цене {2} р. Время отправления {3}'.format(place[0], name, place[2], train_time)
+                print(message, ' ', time.ctime())
+                msg(message)
         train_name.append(name)
         print('-'*60)
 

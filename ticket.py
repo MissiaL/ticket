@@ -6,7 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 
 
-url = 'http://pass.rzd.ru/timetable/public/ru?STRUCTURE_ID=735&layer_id=5354&refererVpId=1&refererPageId=704&refererLayerId=4065#dir=0|tfl=3|checkSeats=1|st0=%D0%9C%D0%9E%D0%A1%D0%9A%D0%92%D0%90|code0=2000000|dt0=30.04.2015|ti0=20-24|st1=%D0%9A%D0%90%D0%9D%D0%90%D0%A8|code1=2060630|dt1=18.03.2015'
+#url = 'http://pass.rzd.ru/timetable/public/ru?STRUCTURE_ID=735&layer_id=5354&refererVpId=1&refererPageId=704&refererLayerId=4065#dir=0|tfl=3|checkSeats=1|st0=%D0%9C%D0%9E%D0%A1%D0%9A%D0%92%D0%90|code0=2000000|dt0=30.04.2015|ti0=20-24|st1=%D0%9A%D0%90%D0%9D%D0%90%D0%A8|code1=2060630|dt1=18.03.2015'
+url = 'http://pass.rzd.ru/timetable/public/ru?STRUCTURE_ID=704&layer_id=5354&refererLayerId=4819#dir=0|tfl=3|checkSeats=1|st0=%D0%9C%D0%9E%D0%A1%D0%9A%D0%92%D0%90|code0=2000000|dt0=30.04.2015|st1=%D0%9A%D0%90%D0%9D%D0%90%D0%A8|code1=2060630|dt1=19.03.2015'
 
 
 #driver = webdriver.PhantomJS(executable_path="C:\\Python\\phantomjs-2.0.0-windows\\bin\\phantomjs.exe")
@@ -18,7 +19,7 @@ while True:
             EC.presence_of_element_located((By.XPATH, '//*[@class="trlist"]'))
         )
     except:
-        print 'Cant load ticket page'
+        print ('Cant load ticket page')
         driver.refresh()
         continue
     trains = driver.find_elements_by_xpath('//*[@class="trlist"]/tbody/tr')
@@ -26,20 +27,20 @@ while True:
     train_name = []
     for train in trains:
         name = train.find_element_by_xpath('.//td[3]/div[@class="trlist__cell-pointdata__tr-num train-num-0"]').text
+        train_time = train.find_element_by_xpath('.//td[4]/div/span[1]').text
         places = train.find_elements_by_xpath('.//td[9]/table/tbody/tr')
-        print places
         for place in places:
             #print place.get_attribute('innerHTML')
-            print place.text
-            train_name.append([name, place.text])
-        print '-'*60
+            place = place.text.split(' ')
+            if place[0] == 'Плацкартный':
+                print('Купить срочно {0} билет на поезд {1} по цене {2} р. Время отправления {3}'.format(place[0], name, place[2], train_time))
+            if place[0] == 'Купе' and int(place[2]) <= 3000:
+                print('Купить срочно {0} билет на поезд {1} по цене {2} р. Время отправления {3}'.format(place[0], name, place[2], train_time))
+        train_name.append(name)
+        print('-'*60)
 
-    r = []
-    print train_name
-    for i in train_name:
-        for t in i:
-            r.append(t.decode('cp1251'))
-    print r
+    print(train_name)
+
     #print 'На 30 апреля с 20-00 до 24-00 доступно {0} поезда: {1}'.format(len(trains), ', '.join(train_name))
 
 
